@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, Form, APIRouter, Request,Response
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from custom_logging import CustomizeLogger
 from utils import ocr_util, openai_util,wx_util
@@ -15,10 +16,12 @@ logger = logging.getLogger(__name__)
 config_path = Path(__file__).with_name("logging_config.json")
 
 router = APIRouter(prefix="/yuepao")
+# router.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title='CustomLogger', debug=False)
+    app.mount("/yuepao/static", StaticFiles(directory="static"), name="static")
     app.include_router(router)
     logger = CustomizeLogger.make_logger(config_path)
     app.logger = logger
@@ -65,6 +68,7 @@ def wx_code2session(req: Request,code: str):
 @router.get("/")
 async def root():
     return {"message": "Hello World"}
+
 
 
 if __name__ == '__main__':
