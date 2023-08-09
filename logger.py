@@ -35,7 +35,7 @@ class InterceptHandler(logging.Handler):
         ).log(level,record.getMessage())
 
 
-class CustomizeLogger:
+class Logger:
 
     @classmethod
     def make_logger(cls,config_path: Path):
