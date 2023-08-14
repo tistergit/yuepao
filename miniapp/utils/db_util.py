@@ -1,5 +1,5 @@
 from tinydb import TinyDB, Query
-import config
+import config as config
 
 db = TinyDB(config.DB_FILE)
 

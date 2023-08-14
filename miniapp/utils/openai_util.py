@@ -2,22 +2,15 @@ import openai
 import os
 
 
-
 openai.api_key = os.environ.get("OPENAI_API_KEY")
 # openai.api_base = 'https://api.openai-proxy.com/v1'
 openai.api_base = os.environ.get("OPENAI_API_BASE")
 
 
-messages = [
-    {"role": "system", "content":
-     '''
-        你是一位资深的雅思写作考官
-        '''
-     },
-]
+messages = [{"role": "system", "content": "You are a helpful assistant."}]
 
 
-def openai_trans(content):
+def ielts_coach(content):
     user_prompt = f'''
     你是一位资深的雅思写作考官,你的口吻需要听起来专业且风趣，我会给你输入一篇雅思作文，你的目的是让我发现自己作文的问题，以及后续应该怎么修改，你可以通过你自己的经验来组织语言，下面这些事情是你可以进行参考的：
 
@@ -43,6 +36,20 @@ def openai_trans(content):
     return result
 
 
+def englishTranChinese(text: str):
+    
+    user_prompt = f"Translate the following English text to Chinese: '{text}'"
+    messages.append({"role": "user", "content": user_prompt})
+
+    print(messages)
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages
+    )
+    result = completion.choices[0].message.content
+    return result
+
+
 if __name__ == '__main__':
     a_doc = '''
     The bar chart below give some information about the figure of households living in
@@ -59,5 +66,5 @@ if __name__ == '__main__':
     Overall,comparing the number from 2007 to 2015,all the figure increased to their highest
     level except middle earning household.
     '''
-    result = openai_trans(a_doc)
+    result = englishTranChinese(a_doc)
     print(result)

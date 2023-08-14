@@ -1,6 +1,6 @@
 import hashlib
 import requests
-import config
+import config as config
 
 def checkSignature(data):
     TOKEN = "tisteryu"

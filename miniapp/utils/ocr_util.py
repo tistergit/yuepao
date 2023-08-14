@@ -3,7 +3,7 @@ import logging
 
 def paddle_ocr_text(img_path):
     logging.info("== ocr start ==")
-    ocr = PaddleOCR(use_angle_cls=True, lang='en')
+    ocr = PaddleOCR(use_angle_cls=True, lang='ch')
     result = ocr.ocr(img_path, cls=True)
     for row in result[0]:
         concat_output = "\n".join(row[1][0] for row in result[0])

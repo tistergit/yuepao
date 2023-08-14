@@ -10,20 +10,21 @@ import uvicorn as uvicorn
 
 from my_cmd import *
 
-IMAGES_PATH = 'images'
+IMAGES_PATH = '/images'
 
 
 logger = logging.getLogger(__name__)
 
 config_path = Path(__file__).with_name("logging_config.json")
 
-router = APIRouter(prefix="/yuepao")
+uri = os.environ.get("URI",'/dev')
+
+router = APIRouter(prefix=uri)
 # router.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 def create_app() -> FastAPI:
     app = FastAPI(title='CustomLogger', debug=False)
-    app.mount("/yuepao/static", StaticFiles(directory="static"), name="static")
     app.include_router(router)
     logger = Logger.make_logger(config_path)
     app.logger = logger
@@ -47,17 +48,20 @@ def upload(func_id: str,request: Request, file: UploadFile = File(...)):
         file.file.close()
     ocr_result = ocr_util.paddle_ocr_text(dst_file)
     request.app.logger.info("ocr result : {} ", ocr_result)
+    func_result = ""
     match func_id:
         case "ielts":
-            ielts_cmd(ocr_result)
+            func_result = ielts_cmd(ocr_result)
         case "ocr":
-            ocr_cmd(ocr_result)
+            func_result =  ocr_cmd(ocr_result)
+        case "fanyi":
+            func_result = fanyi_cmd(ocr_result)
         case _:
-            todo_cmd(ocr_result)
+            func_result = todo_cmd(ocr_result)
 
 
     request.app.logger.info("== upload file end ===")
-    return {'code': 200, 'message': ocr_result}
+    return {'code': 200, 'message': func_result}
 
 @router.get("/requestSubscribeMessage")
 def requestSubscribeMessage(req: Request):

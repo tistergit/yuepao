@@ -5,14 +5,16 @@ services:
       WX_APP_SECRET:
       OPENAI_API_KEY:
       OPENAI_API_BASE:
+      URI: '/yuepao'
     build:
-      context: ./
-      dockerfile: Dockerfile
+      dockerfile: ./docker/Dockerfile
       args:
         buildno: 1
     ports:
       - "8000:8000"
     volumes:
       - ./logs:/app/logs
+      - ../images:/images
+  
     command:
       /bin/python3 -m uvicorn main:create_app --host 0.0.0.0 --port 8000
